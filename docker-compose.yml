@@ -1,0 +1,29 @@
+version: '1'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: 'linux/amd64'
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/workspaces/poke-be
+      - node_modules:/workspaces/poke-be/node_modules
+  db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_PASSWORD=p1k4
+      - POSTGRES_USER=ash
+      - POSTGRES_DB=poke_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/pgdata
+      - ./db:/docker-entrypoint-initdb.d
+
+
+volumes:
+  node_modules:
+  pgdata:
