@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PokemonEntity } from './pokemon.entity';
 import { Pokemon } from '../models/pokemon.model';
+import axios from 'axios';
 
 @Injectable()
 export class PokemonService {
@@ -51,6 +52,19 @@ export class PokemonService {
 
   async getTotal(): Promise<number> {
     return this.pokemonRepository.count();
+  }
+
+  async uploadExternal(idOrName: string): Promise<PokemonEntity> {
+    try {
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${idOrName}`,
+      );
+
+      return this.pokemonRepository.save(response.data);
+    } catch (error) {
+      console.error('Error importing Pokémon:', error);
+      throw new Error('Failed to import Pokémon');
+    }
   }
 
   private entityToDto(pokemon: PokemonEntity): Pokemon {

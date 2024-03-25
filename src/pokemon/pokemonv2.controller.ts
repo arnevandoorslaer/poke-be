@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -77,5 +78,10 @@ export class PokemonV2Controller {
     await this.pokemonService.bulkCreate(
       jsonData.map((data) => ({ ...data, species_name: data.species.name })),
     );
+  }
+
+  @Get('upload/external/:idOrName')
+  async importPokemon(@Param('idOrName') idOrName: string): Promise<any> {
+    return this.pokemonService.uploadExternal(idOrName);
   }
 }
