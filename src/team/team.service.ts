@@ -11,13 +11,11 @@ export class TeamService {
     private readonly teamRepository: Repository<TeamEntity>,
   ) {}
 
-  async findAll(): Promise<Team[]> {
-    const teams = await this.teamRepository.find();
-    return teams.map((team) => this.entityToDto(team));
-  }
-
   async findOne(id: number): Promise<Team> {
-    const team = await this.teamRepository.findOne({ where: { id } });
+    const team = await this.teamRepository.findOne({
+      where: { id },
+      relations: ['pokemonTeam'],
+    });
     return this.entityToDto(team);
   }
 
@@ -26,14 +24,23 @@ export class TeamService {
     return this.entityToDto(createdTeam);
   }
 
+  async findAll(): Promise<Team[]> {
+    return this.teamRepository
+      .find({
+        relations: ['pokemonTeam'],
+      })
+      .then((teams) => teams.map(this.entityToDto));
+  }
+
   private entityToDto(team: TeamEntity): Team {
     if (!team) {
       return null;
     }
+
     return {
       id: team.id,
       name: team.name,
-      pokemon: [], // Assuming you have a pokemon property in the Team DTO
+      pokemons: team.pokemonTeam.map((pokemonTeam) => pokemonTeam.pokemon_id),
     };
   }
 }

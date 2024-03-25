@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { PokemonTeamEntity } from '../pokemonteam/pokemonteam.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('team')
 export class TeamEntity {
@@ -7,4 +8,7 @@ export class TeamEntity {
 
   @Column()
   name: string;
+
+  @OneToMany(() => PokemonTeamEntity, (pokemonTeam) => pokemonTeam.team)
+  pokemonTeam: PokemonTeamEntity[];
 }

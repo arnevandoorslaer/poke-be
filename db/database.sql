@@ -69,3 +69,17 @@ VALUES
     ('Misty Waterflower', 'misty@example.com', 'starmie456'),
     ('Brock Harrison', 'brock@example.com', 'geodude789');
 
+
+CREATE TABLE PokemonTeam (
+    team_id INT,
+    pokemon_id INT,
+    PRIMARY KEY (team_id, pokemon_id),
+    FOREIGN KEY (team_id) REFERENCES Team(id),
+    FOREIGN KEY (pokemon_id) REFERENCES Pokemon(id)
+);
+
+INSERT INTO PokemonTeam (team_id, pokemon_id)
+VALUES 
+    (1, 1), -- Bulbasaur to Team Rocket
+    (2, 2), -- Charmander to Team Magma
+    (3, 3); -- Squirtle to Team Aqua
