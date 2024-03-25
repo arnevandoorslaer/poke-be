@@ -13,6 +13,7 @@ services:
       - POSTGRES_USER=ash
       - POSTGRES_DB=poke_db
       - POSTGRES_PORT=5432
+      - HARDCODED_TOKEN=ahardcodedtoken
       
     ports:
       - '3000:3000'
