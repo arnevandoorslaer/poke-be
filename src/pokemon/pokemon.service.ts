@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PokemonEntity } from './pokemon.entity';
@@ -18,6 +18,11 @@ export class PokemonService {
 
   async findOne(id: number): Promise<Pokemon> {
     const pokemon = await this.pokemonRepository.findOne({ where: { id } });
+
+    if (!pokemon) {
+      throw new NotFoundException('Pokemon not found');
+    }
+
     return this.entityToDto(pokemon);
   }
 
