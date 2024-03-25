@@ -21,6 +21,17 @@ export class PokemonService {
     return this.entityToDto(pokemon);
   }
 
+  async searchPokemons(query: string): Promise<Pokemon[]> {
+    const lowerCaseQuery = query.toLowerCase();
+    return this.pokemonRepository
+      .createQueryBuilder('pokemon')
+      .where('LOWER(pokemon.name) LIKE :query', {
+        query: `%${lowerCaseQuery}%`,
+      })
+      .getMany()
+      .then((pokemons) => pokemons.map((pokemon) => this.entityToDto(pokemon)));
+  }
+
   private entityToDto(pokemon: PokemonEntity): Pokemon {
     if (!pokemon) {
       return null;
