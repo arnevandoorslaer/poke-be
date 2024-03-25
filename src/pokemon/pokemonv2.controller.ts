@@ -1,6 +1,15 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { Pokemon } from '../models/pokemon.model';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/v2/pokemons')
 export class PokemonV2Controller {
@@ -45,5 +54,26 @@ export class PokemonV2Controller {
       data: paginatedPokemons,
       metadata,
     };
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file): Promise<void> {
+    if (!file || file.mimetype !== 'application/json') {
+      throw new BadRequestException(
+        'Invalid file format. Please upload a JSON file.',
+      );
+    }
+
+    let jsonData: any[];
+    try {
+      jsonData = JSON.parse(file.buffer.toString());
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+    }
+
+    await this.pokemonService.bulkCreate(
+      jsonData.map((data) => ({ ...data, species_name: data.species.name })),
+    );
   }
 }

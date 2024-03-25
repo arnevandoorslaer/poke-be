@@ -37,6 +37,12 @@ export class PokemonService {
       .then((pokemons) => pokemons.map((pokemon) => this.entityToDto(pokemon)));
   }
 
+  async bulkCreate(
+    pokemonData: Partial<PokemonEntity>[],
+  ): Promise<PokemonEntity[]> {
+    return this.pokemonRepository.save(pokemonData);
+  }
+
   private entityToDto(pokemon: PokemonEntity): Pokemon {
     if (!pokemon) {
       return null;
@@ -44,17 +50,8 @@ export class PokemonService {
     return {
       id: pokemon.id,
       name: pokemon.name,
-      sprites: {
-        front_default: pokemon.front_default,
-      },
-      types: [
-        {
-          type: {
-            name: pokemon.type_name,
-          },
-          slot: pokemon.type_slot,
-        },
-      ],
+      sprites: pokemon.sprites,
+      types: pokemon.types,
     };
   }
 }
