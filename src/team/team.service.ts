@@ -40,7 +40,9 @@ export class TeamService {
     return {
       id: team.id,
       name: team.name,
-      pokemons: team.pokemonTeam.map((pokemonTeam) => pokemonTeam.pokemon_id),
+      pokemons: team.pokemonTeam
+        ? team.pokemonTeam.map((pokemonTeam) => pokemonTeam.pokemon_id)
+        : [],
     };
   }
 }
