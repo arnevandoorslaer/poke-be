@@ -37,7 +37,7 @@ describe('TeamService', () => {
       expect(result).toEqual({ id: teamId, name: 'Team', pokemons: [] });
       expect(teamRepository.findOne).toHaveBeenCalledWith({
         where: { id: teamId },
-        relations: ['pokemonTeam'],
+        relations: ['pokemons'],
       });
     });
 
@@ -50,7 +50,7 @@ describe('TeamService', () => {
       expect(result).toBeNull();
       expect(teamRepository.findOne).toHaveBeenCalledWith({
         where: { id: teamId },
-        relations: ['pokemonTeam'],
+        relations: ['pokemons'],
       });
     });
   });
@@ -77,7 +77,7 @@ describe('TeamService', () => {
 
       expect(result).toEqual([{ id: 1, name: 'Team', pokemons: [] }]);
       expect(teamRepository.find).toHaveBeenCalledWith({
-        relations: ['pokemonTeam'],
+        relations: ['pokemons'],
       });
     });
   });
@@ -100,8 +100,8 @@ describe('TeamService', () => {
       const pokemonIds = [101, 102, 103, 104];
       const existingPokemonIds = [101, 102];
       const newPokemonTeamEntities = [
-        { team: teamId, pokemon_id: 103 },
-        { team: teamId, pokemon_id: 104 },
+        { team_id: teamId, pokemon_id: 103 },
+        { team_id: teamId, pokemon_id: 104 },
       ] as PokemonTeamEntity[];
 
       findOneSpy.mockResolvedValueOnce({ id: teamId });

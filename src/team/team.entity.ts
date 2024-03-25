@@ -9,6 +9,6 @@ export class TeamEntity {
   @Column()
   name: string;
 
-  @OneToMany(() => PokemonTeamEntity, (pokemonTeam) => pokemonTeam.team)
-  pokemonTeam: PokemonTeamEntity[];
+  @OneToMany(() => PokemonTeamEntity, (pokemonTeam) => pokemonTeam.team_id)
+  pokemons: PokemonTeamEntity[];
 }

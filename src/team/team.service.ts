@@ -17,7 +17,7 @@ export class TeamService {
   async findOne(id: number): Promise<Team> {
     const team = await this.teamRepository.findOne({
       where: { id },
-      relations: ['pokemonTeam'],
+      relations: ['pokemons'],
     });
     return this.entityToDto(team);
   }
@@ -30,7 +30,7 @@ export class TeamService {
   async findAll(): Promise<Team[]> {
     return this.teamRepository
       .find({
-        relations: ['pokemonTeam'],
+        relations: ['pokemons'],
       })
       .then((teams) => teams.map(this.entityToDto));
   }
@@ -44,7 +44,7 @@ export class TeamService {
     const existingPokemonIds = new Set(
       (
         await this.pokemonTeamRepository.find({
-          where: { team: { id: teamId } },
+          where: { team_id: teamId },
         })
       ).map((entity) => entity.pokemon_id),
     );
@@ -53,7 +53,7 @@ export class TeamService {
       .filter((pokemonId) => !existingPokemonIds.has(pokemonId))
       .map(
         (pokemonId) =>
-          ({ team: teamId, pokemon_id: pokemonId }) as PokemonTeamEntity,
+          ({ team_id: teamId, pokemon_id: pokemonId }) as PokemonTeamEntity,
       );
 
     await this.pokemonTeamRepository.insert(newPokemonTeamEntities);
@@ -69,9 +69,7 @@ export class TeamService {
     return {
       id: team.id,
       name: team.name,
-      pokemons: team.pokemonTeam
-        ? team.pokemonTeam.map((pokemonTeam) => pokemonTeam.pokemon_id)
-        : [],
+      pokemons: team.pokemons?.map((object) => object.pokemon_id) ?? [],
     };
   }
 }

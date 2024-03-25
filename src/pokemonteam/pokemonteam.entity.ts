@@ -6,7 +6,7 @@ export class PokemonTeamEntity {
   @PrimaryColumn()
   pokemon_id: number;
 
-  @ManyToOne(() => TeamEntity, (team) => team.pokemonTeam)
+  @ManyToOne(() => TeamEntity, (team) => team.pokemons)
   @JoinColumn({ name: 'team_id' })
-  team: TeamEntity | number;
+  team_id: number;
 }
