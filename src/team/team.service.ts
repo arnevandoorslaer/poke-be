@@ -43,18 +43,28 @@ export class TeamService {
 
     const existingPokemonIds = new Set(
       (
-        await this.pokemonTeamRepository.find({
-          where: { team_id: teamId },
-        })
-      ).map((entity) => entity.pokemon_id),
+        await this.pokemonTeamRepository.query(
+          `SELECT pokemon_id FROM pokemonteam WHERE team_id = $1`,
+          [teamId],
+        )
+      ).map((row) => row.pokemon_id),
     );
 
-    const newPokemonTeamEntities = pokemonIds
-      .filter((pokemonId) => !existingPokemonIds.has(pokemonId))
-      .map(
-        (pokemonId) =>
-          ({ team_id: teamId, pokemon_id: pokemonId }) as PokemonTeamEntity,
-      );
+    const newPokemonIds = pokemonIds.filter(
+      (pokemonId) => !existingPokemonIds.has(pokemonId),
+    );
+
+    if (newPokemonIds.length === 0) {
+      return team;
+    }
+
+    const newPokemonTeamEntities = newPokemonIds.map(
+      (pokemonId) =>
+        ({
+          team_id: teamId,
+          pokemon_id: pokemonId,
+        }) as PokemonTeamEntity,
+    );
 
     await this.pokemonTeamRepository.insert(newPokemonTeamEntities);
 

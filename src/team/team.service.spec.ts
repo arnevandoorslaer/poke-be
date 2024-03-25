@@ -16,8 +16,8 @@ describe('TeamService', () => {
     };
 
     pokemonTeamRepository = {
-      find: jest.fn(),
       insert: jest.fn(),
+      query: jest.fn(),
     };
     service = new TeamService(teamRepository, pokemonTeamRepository);
   });
@@ -84,12 +84,15 @@ describe('TeamService', () => {
 
   describe('setPokemonsOfTeam', () => {
     let findOneSpy: jest.SpyInstance;
-    let findSpy: jest.SpyInstance;
     let insertSpy: jest.SpyInstance;
+    let querySpy: jest.SpyInstance;
 
     beforeEach(() => {
       findOneSpy = jest.spyOn(service, 'findOne').mockImplementation();
-      findSpy = jest.spyOn(pokemonTeamRepository, 'find').mockImplementation();
+      querySpy = jest
+        .spyOn(pokemonTeamRepository, 'query')
+        .mockImplementation();
+
       insertSpy = jest
         .spyOn(pokemonTeamRepository, 'insert')
         .mockImplementation();
@@ -105,7 +108,7 @@ describe('TeamService', () => {
       ] as PokemonTeamEntity[];
 
       findOneSpy.mockResolvedValueOnce({ id: teamId });
-      findSpy.mockResolvedValueOnce(
+      querySpy.mockResolvedValueOnce(
         existingPokemonIds.map((id) => ({ pokemon_id: id })),
       );
 
