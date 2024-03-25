@@ -58,9 +58,7 @@ export class TeamService {
 
     await this.pokemonTeamRepository.insert(newPokemonTeamEntities);
 
-    team.pokemons = pokemonIds;
-
-    return team;
+    return this.findOne(teamId);
   }
 
   private entityToDto(team: TeamEntity): Team {
