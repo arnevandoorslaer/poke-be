@@ -17,7 +17,7 @@ export class PokemonV2Controller {
 
   @Get()
   async getAllPokemons(
-    @Query('limit') limit: number = 10,
+    @Query('limit') limit: number = Number.MAX_SAFE_INTEGER,
     @Query('offset') offset: number = 0,
   ): Promise<{
     data: Pokemon[];
@@ -29,11 +29,13 @@ export class PokemonV2Controller {
       page: number;
     };
   }> {
-    const pokemons = await this.pokemonService.findAll();
-    const total = pokemons.length;
-    const paginatedPokemons = pokemons.slice(offset, offset + limit);
+    const pokemons = await this.pokemonService.findAll(limit, offset);
+    const total = await this.pokemonService.getTotal();
+
     const pages = Math.ceil(total / limit);
-    const nextOffset = Math.min(offset + limit, total);
+    const currentPage = Math.ceil(offset / limit) + 1;
+
+    const nextOffset = +offset + +limit;
     const prevOffset = Math.max(offset - limit, 0);
 
     const metadata = {
@@ -47,11 +49,11 @@ export class PokemonV2Controller {
           : null,
       total,
       pages,
-      page: Math.ceil(offset / limit) + 1,
+      page: currentPage,
     };
 
     return {
-      data: paginatedPokemons,
+      data: pokemons,
       metadata,
     };
   }

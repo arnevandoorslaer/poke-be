@@ -11,8 +11,14 @@ export class PokemonService {
     private readonly pokemonRepository: Repository<PokemonEntity>,
   ) {}
 
-  async findAll(): Promise<Pokemon[]> {
-    const pokemons = await this.pokemonRepository.find();
+  async findAll(
+    limit: number = Number.MAX_SAFE_INTEGER,
+    offset: number = 0,
+  ): Promise<Pokemon[]> {
+    const pokemons = await this.pokemonRepository.find({
+      skip: offset,
+      take: limit,
+    });
     return pokemons.map((pokemon) => this.entityToDto(pokemon));
   }
 
@@ -41,6 +47,10 @@ export class PokemonService {
     pokemonData: Partial<PokemonEntity>[],
   ): Promise<PokemonEntity[]> {
     return this.pokemonRepository.save(pokemonData);
+  }
+
+  async getTotal(): Promise<number> {
+    return this.pokemonRepository.count();
   }
 
   private entityToDto(pokemon: PokemonEntity): Pokemon {
