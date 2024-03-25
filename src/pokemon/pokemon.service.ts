@@ -28,9 +28,17 @@ export class PokemonService {
     return {
       id: pokemon.id,
       name: pokemon.name,
-      front_default: pokemon.front_default,
-      type_name: pokemon.type_name,
-      type_slot: pokemon.type_slot,
+      sprites: {
+        front_default: pokemon.front_default,
+      },
+      types: [
+        {
+          type: {
+            name: pokemon.type_name,
+          },
+          slot: pokemon.type_slot,
+        },
+      ],
     };
   }
 }

@@ -1,7 +1,13 @@
 export interface Pokemon {
   id: number;
   name: string;
-  front_default: string;
-  type_name: string;
-  type_slot: number;
+  sprites: {
+    front_default: string;
+  };
+  types: {
+    type: {
+      name: string;
+    };
+    slot: number;
+  }[];
 }
